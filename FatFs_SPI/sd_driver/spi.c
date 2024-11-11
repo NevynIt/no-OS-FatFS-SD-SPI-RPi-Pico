@@ -112,19 +112,19 @@ bool spi_transfer(spi_t *spi_p, const uint8_t *tx, uint8_t *rx, size_t length) {
     dma_start_channel_mask((1u << spi_p->tx_dma) | (1u << spi_p->rx_dma));
 
     /* Wait until master completes transfer or time out has occured. */
-    uint32_t timeOut = 1000; /* Timeout 1 sec */
-    bool rc = sem_acquire_timeout_ms(
-        &spi_p->sem, timeOut);  // Wait for notification from ISR
-    if (!rc) {
-        // If the timeout is reached the function will return false
-        DBG_PRINTF("Notification wait timed out in %s\n", __FUNCTION__);
-        return false;
-    }
+    // uint32_t timeOut = 1000; /* Timeout 1 sec */
+    // bool rc = sem_acquire_timeout_ms(
+    //     &spi_p->sem, timeOut);  // Wait for notification from ISR
+    // if (!rc) {
+    //     // If the timeout is reached the function will return false
+    //     DBG_PRINTF("Notification wait timed out in %s\n", __FUNCTION__);
+    //     return false;
+    // }
     // Shouldn't be necessary:
     dma_channel_wait_for_finish_blocking(spi_p->tx_dma);
     dma_channel_wait_for_finish_blocking(spi_p->rx_dma);
 
-    assert(!sem_available(&spi_p->sem));
+    // assert(!sem_available(&spi_p->sem));
     assert(!dma_channel_is_busy(spi_p->tx_dma));
     assert(!dma_channel_is_busy(spi_p->rx_dma));
 
